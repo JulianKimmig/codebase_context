@@ -1,0 +1,41 @@
+# Bytecode
+__pycache__/
+*.pyc
+
+# Output files
+codebase.txt
+*.txt
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# IDE-specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Log files
+*.log
+
+# Python debug logs
+*.log.*
+
+# Jupyter
+.ipynb_checkpoints
+
+# Temporary files
+*.tmp
+*.bak
+*.tar.gz
+
+# Others
+*.egg-info/
+dist/
+build/
