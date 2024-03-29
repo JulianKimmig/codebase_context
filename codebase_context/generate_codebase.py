@@ -2,17 +2,20 @@ import os
 
 
 def generate_codebase(module: str, outfile="codebase.txt"):
-    module = __import__(module)
+    try:
+        module = __import__(module)
 
-    # Get the module path and directory
-    module_path = module.__file__
-    module_dir = os.path.dirname(module_path)
-
+        # Get the module path and directory
+        module_path = module.__file__
+        module_dir = os.path.dirname(module_path)
+    except ModuleNotFoundError:
+        module_dir = module
+        if not os.path.exists(module_dir) or not os.path.isdir(module_dir):
+            raise
     # Start folder is the absolute path to the module directory
     startfolder = os.path.abspath(module_dir)
 
     # Walk through all files in the folder
-    codebase = []
 
     def build_folder_tree(startfolder: str) -> str:
         """Builds a folder tree representation of the given startfolder.
