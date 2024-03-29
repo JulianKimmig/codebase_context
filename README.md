@@ -22,7 +22,7 @@ pip install codebase_context
 
 1. **Clone the repository:**
 
-````
+```
 
 git clone https://yourrepository/codebase_context.git
 cd codebase_context
@@ -30,6 +30,7 @@ cd codebase_context
 ```
 
 2. **Ensure Python 3.6+ is installed:**
+
 ```
 
 python3 --version
@@ -64,11 +65,13 @@ python3 -m codebase_context example_module
 This command will create a `codebase.txt` file in the current directory containing the summary of `example_module`.
 
 - **Generate a summary with a custom output file name:**
+
 ```
 
 python3 -m codebase_context example_module --outfile summary.txt
 
 ```
+
 This will generate a file named `summary.txt` with the codebase summary.
 
 ## Contributing
@@ -86,5 +89,7 @@ Contributions to the Codebase Context Generator are welcome! Here's how you can 
 5. **Submit a pull request**: Open a pull request from your forked repository to the main project. Describe your changes and why they should be included.
 
 Thank you for considering contributing to the Codebase Context Generator. Your efforts help make this tool more robust and useful for everyone!
+
 ```
-````
+
+```
