@@ -1,17 +1,69 @@
 import os
+import wrapconfig
+from wrapconfig._read import create_config
+
+wrapconfig.create_config = create_config
 
 
-def generate_codebase(module: str, outfile="codebase.txt"):
-    try:
-        module = __import__(module)
+def generate_codebase(
+    module: str,
+    outfile="codebase.txt",
+    endings=[".py"],
+    config=None,
+    ignore_hidden=None,
+):
+    """
+    Generates a codebase file for the given module.
 
-        # Get the module path and directory
-        module_path = module.__file__
-        module_dir = os.path.dirname(module_path)
-    except ModuleNotFoundError:
+    Args:
+      module (str): The name of the module to generate the codebase for.
+      outfile (str): The name of the output file to write the codebase to. Defaults to "codebase.txt".
+
+    Raises:
+      ModuleNotFoundError: If the given module cannot be found.
+
+    Returns:
+      None
+    """
+
+    if config is None:
+        config = "generate_codebase.toml"
+
+    config = wrapconfig.create_config(config, default_save=True)
+
+    endings = [e if e.startswith(".") else "." + e for e in endings]
+    if endings:
+        config.set(
+            "filter",
+            "endings",
+            list(set(config.get("filter", "endings", default=[]) + endings)),
+        )
+
+    endings = config.get("filter", "endings", default=[])
+    if ignore_hidden is None:
+        ignore_hidden = config.get("filter", "ignore_hidden", default=True)
+    config.set("filter", "ignore_hidden", ignore_hidden)
+
+    ignored_paths = config.get(
+        "filter",
+        "ignore",
+        default=[".git", "/**/__pycache__", ".vscode", ".venv", ".env", ""],
+    )
+    config.set("filter", "ignored_paths", ignored_paths)
+
+    if not os.path.isdir(module):
+        try:
+            module = __import__(module)
+
+            # Get the module path and directory
+            module_path = module.__file__
+            module_dir = os.path.dirname(module_path)
+        except ModuleNotFoundError:
+            module_dir = module
+            if not os.path.exists(module_dir) or not os.path.isdir(module_dir):
+                raise
+    else:
         module_dir = module
-        if not os.path.exists(module_dir) or not os.path.isdir(module_dir):
-            raise
     # Start folder is the absolute path to the module directory
     startfolder = os.path.abspath(module_dir)
 
@@ -92,17 +144,29 @@ def generate_codebase(module: str, outfile="codebase.txt"):
     # Iterate through the files in the folder and write their contents to the output file
     for root, dirs, files in os.walk(startfolder):
         _root = root.replace(startfolder, "").strip(os.sep)
+        if ignore_hidden and any([d.startswith(".") for d in _root.split(os.sep)]):
+            continue
         for file in files:
-            if file.endswith(".py"):
+            if ignore_hidden and file.startswith("."):
+                continue
+            if any([file.endswith(e) for e in endings]):
+                # print("including", file)
                 # Open the file and read its contents
                 with open(os.path.join(root, file), "r") as f:
                     file_contents = f.read()
 
                 # Write the file header and contents to the output file
 
-                context += f"\n\n# {os.path.join(_root, file)}\n\n"
-                context += file_contents
+                context += f"""
 
+# ======================
+# File: {os.path.join(_root, file)}
+# ======================
+"""
+
+                context += file_contents
+            else:
+                print("excluding", file)
     # Write the codebase context to the output file
     with open(outfile, "w") as f:
         f.write(context)
