@@ -40,3 +40,5 @@ Thumbs.db
 dist/
 build/
 dev/
+*codebase.yaml
+*codebase.txt

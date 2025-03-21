@@ -1,95 +1,47 @@
-# Codebase Context Generator
+# Codebase Context
 
-The Codebase Context Generator is a tool designed to create a detailed summary of a Python codebase, including a folder tree and the contents of Python files. This summary can serve as input for large language models or for documentation purposes. By generating a structured representation of a codebase, this tool aids in understanding and analyzing the structure and contents of Python projects.
+Codebase Context is a simple Python tool that generates a textual representation of your project's codebase. It creates a folder tree view along with the contents of files (by default, Python files) to help you get a quick overview of your project's structure.
 
 ## Features
 
-- **Folder Tree Generation**: Creates a hierarchical representation of the directory structure of a Python module or package.
-- **Codebase Summarization**: Collects and summarizes the content of Python files within the specified module or package.
-- **Flexible Output**: Generates a text file that contains both the folder tree and the raw content of Python files, making it easy to process further.
+- **Folder Tree Generation:** Builds a visual tree of your project directories.
+- **File Content Aggregation:** Appends file contents for files matching specified endings.
+- **Customizable Filtering:** Supports configuration for file endings, ignoring hidden files/folders, and more via a YAML config file.
+- **Easy to Use:** Run the module directly from the command line with minimal configuration.
 
 ## Installation
 
-This project does not require installation of external packages beyond the standard Python library. However, it assumes you have Python 3.6 or later installed on your system.
+Install the package using pip:
 
-### Installation via pip
-
-```
-pip install codebase_context
-```
-
-### Installation from source
-
-1. **Clone the repository:**
-
-```
-
-git clone https://yourrepository/codebase_context.git
-cd codebase_context
-
-```
-
-2. **Ensure Python 3.6+ is installed:**
-
-```
-
-python3 --version
-
+```bash
+pip install codebase-context
 ```
 
 ## Usage
 
-To use the Codebase Context Generator, you can run the script from the command line, specifying the target module and the output file.
+You can run the tool from the command line:
 
-### Basic Command
-
+```bash
+python -m codebase_context <module> [--outfile <output_file>] [--endings <file_endings>] [--config <config_file>] [--overwrite]
 ```
 
-python3 -m codebase_context <module> [--outfile <output_file.txt>]
+For example, to generate a codebase file for a module named my_module:
 
+```bash
+python -m codebase_context my_module
 ```
 
-- `<module>`: The name of the Python module or package you wish to summarize.
-- `<output_file.txt>`: Optional. The name of the file to write the summary to. Defaults to `codebase.txt` if not specified.
+During execution, if the output file already exists, the script will prompt you to confirm whether to overwrite it. You can bypass this prompt by using the `--overwrite` flag.
 
-### Examples
+## Configuration
 
-- **Generate a summary for a module called `example_module`:**
+By default, the tool looks for a generate_codebase.yaml configuration file in the target module's root directory. This file allows you to customize:
 
-```
+File endings to include (e.g., .py).
+Hidden file and directory handling.
+Patterns for ignoring specific files or directories.
+If no configuration file is provided, default settings are used.
 
-python3 -m codebase_context example_module
+## License
 
-```
-
-This command will create a `codebase.txt` file in the current directory containing the summary of `example_module`.
-
-- **Generate a summary with a custom output file name:**
-
-```
-
-python3 -m codebase_context example_module --outfile summary.txt
-
-```
-
-This will generate a file named `summary.txt` with the codebase summary.
-
-## Contributing
-
-Contributions to the Codebase Context Generator are welcome! Here's how you can contribute:
-
-1. **Fork the repository**: Click the "Fork" button on the GitHub page to create your own copy of the project.
-
-2. **Create a new branch**: Make a branch for your changes with a descriptive name.
-
-3. **Make your changes**: Add new features or fix bugs.
-
-4. **Write tests**: If possible, add unit tests for your changes to ensure reliability.
-
-5. **Submit a pull request**: Open a pull request from your forked repository to the main project. Describe your changes and why they should be included.
-
-Thank you for considering contributing to the Codebase Context Generator. Your efforts help make this tool more robust and useful for everyone!
-
-```
-
-```
+This project is licensed under the MIT License.
