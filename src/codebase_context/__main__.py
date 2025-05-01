@@ -30,6 +30,13 @@ def main():
     parser.add_argument("--endings", type=str, nargs="*", default=["py"])
     parser.add_argument("--config", type=str, default=None)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument(
+        "--subdirs",
+        type=str,
+        nargs="*",
+        default=None,
+        help="Subdirectories to include in the codebase generation in the format 'subdir1,subdir2'",
+    )
     args = parser.parse_args()
 
     # Run the main function
@@ -37,8 +44,9 @@ def main():
         args.module,
         args.outfile,
         args.endings,
-        config=args.config,
+        configpath=args.config,
         overwrite=args.overwrite,
+        subdirs=args.subdirs,
     )
 
 
