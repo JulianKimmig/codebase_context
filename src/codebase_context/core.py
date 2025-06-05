@@ -6,7 +6,7 @@ from typing import Sequence, Optional, Tuple, TextIO
 import os
 import shutil
 
-from .config import Config, load_or_create_config
+from .config import Config, load_or_create_config, load_config
 from .filesystem import (
     build_folder_tree,
     normalize_endings,
@@ -58,7 +58,7 @@ class CodebaseGenerator:
     @classmethod
     def create(
         cls,
-        module_or_path: str | Path,
+        module_or_path: str | Path | None = None,
         *,
         endings: Optional[Sequence[str]] = None,
         config_path: str | Path | None = None,
@@ -66,6 +66,14 @@ class CodebaseGenerator:
     ) -> "CodebaseGenerator":
         """Return a fully initialised generator, cloning git URLs if needed."""
         tempdir: Path | None = None
+        if module_or_path is None and config_path is None:
+            raise ValueError("Either module_or_path or config_path must be provided.")
+        if module_or_path is None:
+            config = load_config(Path(config_path))
+            module_or_path = config.get("data", "path", default=None)
+            if module_or_path is None:
+                raise ValueError("`path` not found in config file.")
+
         try:
             path: Path
             if is_git_url(str(module_or_path)):
@@ -85,6 +93,8 @@ class CodebaseGenerator:
                 if config_path
                 else target_folder / f"{basename}_generate_codebase.yaml"
             )
+
+            config.set("data", "path", str(module_or_path))
 
             _LOG.info("Loading config from %s", config.config_path)
             if subdirs is not None:  # pull default from config if not provided
@@ -162,7 +172,11 @@ class CodebaseGenerator:
         if outfile:
             outpath = Path(outfile).expanduser().resolve()
         else:
-            outpath = self.target_folder / f"{self.basename}_codebase.txt"
+            outpath = self.target_folder / self.config.get(
+                "data",
+                "outfile",
+                default=f"{self.basename}_codebase.txt",
+            )
 
         if outpath.exists() and not overwrite:
             raise FileExistsError(

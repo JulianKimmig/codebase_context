@@ -6,7 +6,7 @@ from .core import CodebaseGenerator, CodebaseGenerationError
 
 
 def generate_codebase(
-    module: str,
+    module: str | Path | None = None,
     *,
     endings: Optional[Sequence[str]] = None,
     config_path: Optional[Union[str, Path]] = None,
@@ -15,7 +15,7 @@ def generate_codebase(
     overwrite: bool = False,
 ):
     gen = CodebaseGenerator.create(
-        module,
+        module_or_path=module,
         endings=endings or None,
         config_path=config_path,
         subdirs=subdirs,
