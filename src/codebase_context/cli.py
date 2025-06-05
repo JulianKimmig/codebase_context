@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
-@click.argument("module", metavar="MODULE|PATH")
+@click.argument("module", metavar="MODULE|PATH", required=False)
 @click.option("--outfile", type=click.Path(path_type=Path), help="Destination file.")
 @click.option(
     "--endings", multiple=True, required=False, help="File endings to include."
@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 @click.option("--subdirs", "subdirs", multiple=True, help="Restrict to sub-folder(s).")
 @click.option("--overwrite", is_flag=True, help="Overwrite existing outfile.")
 def main(
-    module: str,
+    module: str | Path | None,
     outfile: Path | None,
     endings: Optional[tuple[str, ...]],
     config_path: Path | None,
@@ -29,7 +29,7 @@ def main(
     """Generate a text snapshot of a codebase."""
     try:
         generate_codebase(
-            module,
+            module=module,
             outfile=outfile,
             endings=endings,
             config_path=config_path,

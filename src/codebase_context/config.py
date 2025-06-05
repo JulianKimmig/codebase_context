@@ -11,6 +11,7 @@ If you don’t have *wrapconfig* installed you can
 or replace it with any other “dict-like” config reader – just keep the
 same public API.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -29,6 +30,7 @@ _DEFAULT_IGNORE = [
     "*generate_codebase.*",
     "*codebase.txt",
     "*.lock",
+    "**/node_modules/",
 ]
 
 # ---------------------------------------------------------------------------
@@ -96,6 +98,26 @@ def load_or_create_config(
     return Config(
         cfg,
         Path(config_path).expanduser(),
+    )  # wrap & return
+
+
+def load_config(
+    config_path: str | Path,
+) -> Config:
+    """Return a ready-to-use `Config` object.
+
+    Raises an error if the file does not exist.
+    """
+    config_path = Path(config_path).expanduser()
+    if not config_path.exists():
+        raise FileNotFoundError(f"Config file not found: {config_path}")
+    cfg = wrapconfig.create_config(
+        config_path,
+        default_save=False,
+    )
+    return Config(
+        cfg,
+        config_path,
     )  # wrap & return
 
 
